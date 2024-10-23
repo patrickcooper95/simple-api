@@ -30,36 +30,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/")
-    def index():
-        return "<p>Hello, World!</p>"
-
     @app.route('/dashboard')
     def dashboard():
         if 'logged_in' in session:
             return "Welcome to your dashboard!"
         return redirect(url_for('login', next=request.endpoint))
-
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        if request.method == 'POST':
-            session['username'] = request.form['username']
-            session["logged_in"] = True
-            # Redirect to the next page or the dashboard
-            next_page = request.args.get('next', 'dashboard')
-            return redirect(url_for(next_page))
-        return '''
-            <form method="post">
-                <p><input type=text name=username>
-                <p><input type=submit value=Login>
-            </form>
-        '''
-
-    @app.route('/logout')
-    def logout():
-        # remove the username from the session if it's there
-        session.pop('username', None)
-        return redirect(url_for('index'))
 
     from . import db
     db.init_app(app)
@@ -67,7 +42,11 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import item
+    app.register_blueprint(item.bp)
+    app.add_url_rule('/', endpoint='index')
+
     return app
 
 
-# TODO: Static Files: https://flask.palletsprojects.com/en/3.0.x/tutorial/static/
+# TODO: Blog Blueprint https://flask.palletsprojects.com/en/3.0.x/tutorial/blog/
