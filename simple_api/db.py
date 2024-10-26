@@ -3,6 +3,8 @@ import sqlite3
 import click
 from flask import current_app, g
 
+from simple_api.utils.item_info import ITEM_INFO
+
 
 def get_db():
     if 'db' not in g:
@@ -29,6 +31,15 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 
+def seed_db():
+    """Seed the database with `item` data."""
+    items = [(item["id"], item["name"], item["description"], item["image_path"]) for item in ITEM_INFO]
+
+    db = get_db()
+    db.executemany("insert into item (id, name, description, image_path) values (?, ?, ?, ?)""", items)
+    db.commit()
+
+
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
@@ -36,6 +47,13 @@ def init_db_command():
     click.echo('Initialized the database.')
 
 
+@click.command('seed-db')
+def seed_db_command():
+    seed_db()
+    click.echo("Seeded item data.")
+
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(seed_db_command)

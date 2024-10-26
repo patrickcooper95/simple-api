@@ -8,6 +8,7 @@ from werkzeug.exceptions import abort
 from simple_api.auth import login_required
 from simple_api.db import get_db
 from simple_api.utils import utils
+from simple_api.utils.item_info import ITEM_INFO
 
 bp = Blueprint('item', __name__)
 
@@ -54,6 +55,8 @@ def boo():
 
 
 @bp.route("/1aec4b0f-57c5-4e1d-b0e4-ec66322a3b62", methods=('GET', 'POST'))
+@bp.route("/343a4135-21ed-4a8f-aba0-a05c87065fed", methods=("GET", "POST"))
+@bp.route("/c7a49043-c3c0-4732-82bf-b60779d9feae", methods=("GET", "POST"))
 @login_required
 def duel():
     endpoint_used = request.path.replace("/", "")
@@ -67,18 +70,70 @@ def fludd():
     return utils.dynamic_item_handler(endpoint_used)
 
 
+@bp.route("/a090c6a6-d36d-4da9-a7b0-c1cd4175f4e4", methods=('GET', 'POST'))
+@bp.route("/1e002ec0-bff2-40bf-9a69-769e3cd45edb", methods=('GET', 'POST'))
+@bp.route("/8d229ba6-7b17-43f3-b843-c1ebe44e3dcb", methods=('GET', 'POST'))
+@bp.route("/e0faf21a-f510-4f8f-828e-d451ad0fd762", methods=('GET', 'POST'))
+@login_required
+def flower_power():
+    endpoint_used = request.path.replace("/", "")
+    return utils.dynamic_item_handler(endpoint_used)
+
+
 @bp.route("/35a34cbe-7d24-4e9a-adae-fcdcd5e0c083", methods=('GET', 'POST'))
 @login_required
 def boss_key():
 
-    item_id = "35a34cbe-7d24-4e9a-adae-fcdcd5e0c083"
-    if request.method == "POST":
-        collect_item(item_id)
+    endpoint_used = request.path.replace("/", "")
+    return utils.dynamic_item_handler(endpoint_used)
 
+
+@bp.route("/74f9f95d-ced7-4ac2-82ce-b0079e54b938", methods=("GET", "POST"))
+def boss_chest():
+
+    item_id = "74f9f95d-ced7-4ac2-82ce-b0079e54b938"
     db = get_db()
     item_details = db.execute(f"SELECT * FROM item WHERE id='{item_id}';").fetchone()
 
-    return render_template("item/item_preview.html", item_details=item_details)
+    if request.method == "POST":
+
+        boss_key_id = [item["id"] for item in ITEM_INFO if item["name"] == "Boss Key"][0]
+
+        # Check if the user even has the boss key to open the chest
+        has_boss_key = db.execute(f"SELECT * FROM item WHERE id='{boss_key_id}' and owner={g.user['id']};").fetchone()
+        if not has_boss_key:
+            flash("You don't have the boss key! You cannot open the chest.")
+            return render_template("item/boss_chest.html", item_details=item_details)
+
+        # If they already own the item, then they can't open it again
+        owner_items = db.execute(
+            f"SELECT * FROM item WHERE owner={g.user['id']};"
+        ).fetchall()
+        for item in owner_items:
+            if item["id"] == item_id:
+                flash("You've already opened this chest!")
+                return render_template("item/boss_chest.html", item_details=item_details)
+
+        # If someone else has opened it, they cannot
+        ineligible_items = db.execute(
+            f"SELECT * FROM item WHERE id='{item_id}';"
+        ).fetchone()
+        if ineligible_items["owner"] and ineligible_items["owner"] != g.user["id"]:
+            flash("This item has already been collected!")
+            return render_template("item/boss_chest.html", item_details=item_details)
+
+        # Finally, if all conditions above pass - open the chest and mark it found/used
+        db.execute(
+            f"UPDATE item"
+           f" SET owner={g.user['id']}, found_time='{datetime.now(UTC)}', used=1, used_time='{datetime.now(UTC)}'"
+           f" WHERE id='{item_id}';"
+        )
+        db.commit()
+
+        # re-run item details to reflect ownership and use changes
+        item_details = db.execute(f"SELECT * FROM item WHERE id='{item_id}';").fetchone()
+
+    return render_template("item/boss_chest.html", item_details=item_details)
 
 
 @bp.route("/use", methods=('POST',))
@@ -94,7 +149,7 @@ def use():
         if item["used"] == 1:
             flash("This item has already been used.")
         else:
-            db.execute(f"UPDATE item SET used=1 WHERE id='{item_id}';")
+            db.execute(f"UPDATE item SET used=1, used_time='{datetime.now(UTC)}' WHERE id='{item_id}';")
             db.commit()
     display_items = db.execute(
         f"SELECT * FROM item WHERE owner={g.user['id']};"
@@ -102,17 +157,17 @@ def use():
     return render_template("item/index.html", items=display_items)
 
 
-def collect_item(item_id: str):
-    """Collect an item if the user hasn't already."""
-
-    print(item_id)
-    db = get_db()
-    owner_items = db.execute(
-        f"SELECT * FROM item WHERE owner={g.user['id']};"
-    ).fetchall()
-    for item in owner_items:
-        if item["id"] == item_id:
-            flash("You already have this item!")
-            return
-    db.execute(f"UPDATE item SET owner={g.user['id']}, found='{datetime.now(UTC)}' WHERE id='{item_id}';")
-    db.commit()
+# def collect_item(item_id: str):
+#     """Collect an item if the user hasn't already."""
+#
+#     print(item_id)
+#     db = get_db()
+#     owner_items = db.execute(
+#         f"SELECT * FROM item WHERE owner={g.user['id']};"
+#     ).fetchall()
+#     for item in owner_items:
+#         if item["id"] == item_id:
+#             flash("You already have this item!")
+#             return
+#     db.execute(f"UPDATE item SET owner={g.user['id']}, found_time='{datetime.now(UTC)}' WHERE id='{item_id}';")
+#     db.commit()

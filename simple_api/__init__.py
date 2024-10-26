@@ -47,6 +47,3 @@ def create_app(test_config=None):
     app.add_url_rule('/', endpoint='index')
 
     return app
-
-
-# TODO: Blog Blueprint https://flask.palletsprojects.com/en/3.0.x/tutorial/blog/
