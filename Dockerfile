@@ -1,4 +1,4 @@
-FROM --platform=linux/x86-64 python:3.12
+FROM python:3.12
 
 ADD . /app
 WORKDIR /app
