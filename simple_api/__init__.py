@@ -2,10 +2,6 @@ import os
 
 from flask import (
     Flask,
-    redirect,
-    request,
-    session,
-    url_for,
 )
 
 
@@ -13,7 +9,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY=os.environ.get("FLASK_SECRET_KEY"),
         DATABASE=os.path.join(app.instance_path, 'simple_api.sqlite'),
     )
 
@@ -29,12 +25,6 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    @app.route('/dashboard')
-    def dashboard():
-        if 'logged_in' in session:
-            return "Welcome to your dashboard!"
-        return redirect(url_for('login', next=request.endpoint))
 
     from . import db
     db.init_app(app)

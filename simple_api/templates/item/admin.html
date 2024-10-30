@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Items{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for item in items %}
+    <article class="post">
+      <header>
+        <div>
+          <img src="{{ item['image_path'] }}" class="item_image">
+          <h1>{{ item['name'] }}</h1>
+        </div>
+      </header>
+      {% set item_used = item['used'] %}
+      <p class="body">
+        ID: {{ item['id'] }}
+        Description: {{ item['description'] }}
+        Owner: {{ item['owner_name'] }}
+        Found: {{ item['found_time'] }}
+        Used: {% if item_used == 1 %}Yes{% else %}No{% endif %}
+        Used Time: {{ item['used_time'] }}
+      </p>
+
+      {% if item_used == 1 %}
+        <form action="/reset_use" method="post">
+          <button type="submit" name="button_id" value="{{ item['id'] }}">Reset Use</button>
+        </form>
+      {% endif %}
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
