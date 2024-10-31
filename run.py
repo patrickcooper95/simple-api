@@ -15,4 +15,4 @@ if __name__ == "__main__":
     ).returncode == 0:
         subprocess.run(["flask", "--app", "simple_api", "seed-db"])
 
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8080)

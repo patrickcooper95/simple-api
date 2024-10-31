@@ -2,6 +2,7 @@ import sqlite3
 
 import click
 from flask import current_app, g
+from werkzeug.security import generate_password_hash
 
 from simple_api.utils.item_info import ITEM_INFO
 
@@ -37,6 +38,10 @@ def seed_db():
 
     db = get_db()
     db.executemany("insert into item (id, name, description, image_path) values (?, ?, ?, ?)""", items)
+    db.execute(
+        "INSERT INTO user (username, password, admin) VALUES (?, ?, ?)",
+        ("Patrick", generate_password_hash("bachelor_2024$"), 1),
+    )
     db.commit()
 
 
