@@ -207,18 +207,3 @@ def reset_use():
     ).fetchall()
 
     return render_template("item/admin.html", items=items)
-
-# def collect_item(item_id: str):
-#     """Collect an item if the user hasn't already."""
-#
-#     print(item_id)
-#     db = get_db()
-#     owner_items = db.execute(
-#         f"SELECT * FROM item WHERE owner={g.user['id']};"
-#     ).fetchall()
-#     for item in owner_items:
-#         if item["id"] == item_id:
-#             flash("You already have this item!")
-#             return
-#     db.execute(f"UPDATE item SET owner={g.user['id']}, found_time='{datetime.now(UTC)}' WHERE id='{item_id}';")
-#     db.commit()

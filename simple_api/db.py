@@ -38,9 +38,11 @@ def seed_db():
 
     db = get_db()
     db.executemany("insert into item (id, name, description, image_path) values (?, ?, ?, ?)""", items)
+
+    # Add admin user automatically - only required for deployment to Digital Ocean App Platform
     db.execute(
         "INSERT INTO user (username, password, admin) VALUES (?, ?, ?)",
-        ("Patrick", generate_password_hash("bachelor_2024$"), 1),
+        ("Patrick", generate_password_hash(""), 1),
     )
     db.commit()
 
