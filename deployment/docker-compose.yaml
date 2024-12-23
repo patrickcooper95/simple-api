@@ -7,6 +7,6 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - FLASK_SECRET_KEY="\xb3\x13\njr\xb59\xb3]\xdbi^;\rr\xbe\xacn\x9ce\xeb\xe8&G"
+      - FLASK_SECRET_KEY
     volumes:
       - ../instance:/app/instance

@@ -1,33 +1,33 @@
 
 # ITEM VALUES
 # Flower Power
-FLOWER_POWER_DESCRIPTION = "Give a shot of Fireball (or anything else)."
+FLOWER_POWER_DESCRIPTION = ""
 FLOWER_POWER_IMAGE_PATH = "static/images/flower_power.png"
 FLOWER_POWER_NAME = "Flower Power"
 
 # Duel
 DUEL_NAME = "Duel"
-DUEL_DESCRIPTION = "Challenge someone to a game of your choice."
+DUEL_DESCRIPTION = ""
 DUEL_IMAGE_PATH = "static/images/mario_party_duel.webp"
 
 # One Up
 ONE_UP_NAME = "One Up!"
-ONE_UP_DESCRIPTION = "Get a free match rematch in any tournament game."
+ONE_UP_DESCRIPTION = ""
 ONE_UP_IMAGE_PATH = "static/images/1upshroom.webp"
 
 # Boo
 BOO_NAME = "Boo"
-BOO_DESCRIPTION = "Steal someone's drink and give it to Cory. If Cory, give someone else a new drink."
+BOO_DESCRIPTION = ""
 BOO_IMAGE_PATH = "static/images/king_boo.png"
 
 # Bomb
 BOMB_NAME = "Bomb"
-BOMB_DESCRIPTION = "Tell someone to finish their drink."
+BOMB_DESCRIPTION = ""
 BOMB_IMAGE_PATH = "static/images/zelda_bomb.webp"
 
 # F.L.U.D.D
 FLUDD_NAME = "F.L.U.D.D"
-FLUDD_DESCRIPTION = "Reverse a drinking item used against you."
+FLUDD_DESCRIPTION = ""
 FLUDD_IMAGE_PATH = "static/images/mario_fludd.png"
 
 
@@ -77,7 +77,7 @@ ITEM_INFO = [
     {
         "id": "35a34cbe-7d24-4e9a-adae-fcdcd5e0c083",
         "name": "Boss Key",
-        "description": "This key opens the boss chest in Cory's room.",
+        "description": "",
         "image_path": "static/images/boss_key.webp"
     },
     {
@@ -251,8 +251,7 @@ ITEM_INFO = [
     {
         "id": "74f9f95d-ced7-4ac2-82ce-b0079e54b938",
         "name": "Boss Chest",
-        "description": "You are now the Boss of Cory."
-                       "\nDare him to do anything (unlimited) and with majority vote of the group, he must comply.",
+        "description": "",
         "image_path": "static/images/boss_chest.png"
     }
 ]

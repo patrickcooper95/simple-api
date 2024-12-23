@@ -1,6 +1,4 @@
 from logging import getLogger
-from sqlite3 import OperationalError
-
 from datetime import datetime, UTC
 from flask import flash, g, render_template, request
 
